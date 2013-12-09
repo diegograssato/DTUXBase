@@ -13,6 +13,7 @@
         "base"
     ],
     "homepage": "https://github.com/diegograssato/DTUXBase",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "diegograssato",
