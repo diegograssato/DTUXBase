@@ -1,0 +1,28 @@
+{
+    "name": "diegograssato/dtux-base",
+    "description": "Modulo base para se trabalhar com Zend Framework 2, ele já está apto a trablhar com Doctrine ORM e Doctrine ODM.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "module",
+        "zf2",
+                "ddtux"
+    ],
+    "homepage": "http://framework.zend.com",
+    "authors": [
+        {
+            "name": "Diego Pereira Grassato",
+            "email": "diego.grassato@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "zendframework/zendframework": "2.*",
+    },
+    "autoload": {
+        "psr-0": {
+            "DTUXBase": "src/"
+        }
+        }
+
+}
