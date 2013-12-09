@@ -4,21 +4,23 @@
     "version": "1.0.0",
     "type": "module",
     "license": "BSD-3-Clause",
-    "keywords": [
-        "module",
+    "tags": [
+        "zend framework",
         "zf2",
+        "module",
         "dtux"
     ],
     "homepage": "https://github.com/diegograssato/DTUXBase",
     "authors": [
         {
             "name": "Diego Pereira Grassato",
-            "email": "diego.grassato@gmail.com"
+            "email": "diego.grassato@gmail.com",
+            "homepage": "http://diegograssato.wordpress.com"
         }
     ],
     "require": {
         "php": ">=5.3.3",
-        "zendframework/zendframework": "2.*"
+        "zendframework/zendframework": "2.*@stable"
     },
     "autoload": {
         "psr-0": {
@@ -27,10 +29,5 @@
         "classmap": [
             "./Module.php"
         ]
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0"
-        }
     }
 }
