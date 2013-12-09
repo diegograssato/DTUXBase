@@ -13,10 +13,9 @@
         "base"
     ],
     "homepage": "https://github.com/diegograssato/DTUXBase",
-    "minimum-stability": "dev",
     "authors": [
         {
-            "name": "diegograssato",
+            "name": "Diego Pereira Grassato",
             "email": "diego.grassato@gmail.com",
             "homepage": "http://diegograssato.wordpress.com"
         }
