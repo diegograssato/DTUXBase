@@ -24,7 +24,7 @@ abstract class AbstractDocument
 
     /**
      * @ODM\String
-     * @ODM\Index
+     * @ODM\Index(unique=true)
     */
     protected $nome;
 
