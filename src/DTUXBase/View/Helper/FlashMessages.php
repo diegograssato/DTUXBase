@@ -1,0 +1,66 @@
+<?php
+
+namespace DTUXBase\View\Helper;
+use Zend\View\Helper\AbstractHelper;
+
+/**
+ * Classe responsável por exibir e esconder as mensagens via flashMessenger
+ * @category DTUXBase
+ * @package DTUXBase
+ * @subpackage View\Helper
+ * @author Diego Pereira Grassato <diego.grassato@gmail.com>
+ * @data 31/10/13 19:30
+ */
+class FlashMessages extends AbstractHelper
+{
+    /**
+     * @var $flashMessenger Mensagem
+     */
+    protected $flashMessenger;
+
+    /**
+     * @todo Recebe a mensagem para ser estilizada
+     * @param $flashMessenger
+     */
+    public function setFlashMessenger( $flashMessenger )
+    {
+        $this->flashMessenger = $flashMessenger ;
+    }
+
+    /**
+     * @todo É invocado toda vez que ouver uma chamada de mensagem
+     * @return string
+     */
+    public function __invoke( )
+    {
+        $namespaces = array(
+            'error' ,'success', 'info','warning','danger'
+        );
+        $messageString = '';
+        foreach ( $namespaces as $ns ) {
+
+            $this->flashMessenger->setNamespace( $ns );
+
+            $messages = array_merge(
+                $this->flashMessenger->getMessages()
+                #$this->flashMessenger->getCurrentMessages()
+            );
+
+            if ( !$messages  ) continue;
+
+            $messageString .= "<div class='alert alert-dismissable alert-$ns' id='flashMessenger'>";
+            $messageString .= "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>";
+            $messageString .= implode( '<br />', $messages );
+            $messageString .= "<script>
+                        $( document ).ready(function() {
+                        setTimeout(function () {
+                            jQuery('#flashMessenger').slideToggle('slow').remove();
+                        }, 4000);
+                        });
+            </script>";
+
+            $messageString .= '</div>';
+        }
+        return $messageString ;
+    }
+}

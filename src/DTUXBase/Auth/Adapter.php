@@ -1,0 +1,94 @@
+<?php
+
+namespace DTUXBase\Auth;
+
+use Zend\Authentication\Adapter\AdapterInterface,
+    Zend\Authentication\Result;
+
+/**
+ * Adaptador padrão de autenticação
+ * @category DTUXBase
+ * @package DTUXBase
+ * @subpackage Auth
+ * @author Diego Pereira Grassato <diego.grassato@gmail.com>
+ * @data 31/10/13 11:39
+ */
+class Adapter extends  \DTUXBase\Service\ServiceLocatorAware implements AdapterInterface
+{
+    protected $manager;
+    protected $entity;
+    protected $username;
+    protected $password;
+
+
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    }
+
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+    /**
+     * @param mixed $entity
+     */
+    public function setEntity($entity)
+    {
+        $this->entity = $entity;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEntity()
+    {
+        return $this->entity;
+    }
+
+    /**
+     * @return Result
+     */
+    public function authenticate()
+    {
+        $repository = $this->getManager()->getRepository($this->getEntity());
+        $user = $repository->findByEmailAndPassword($this->getUsername(), $this->getPassword());
+        if ($user)
+            return new Result(Result::SUCCESS, array('user' => $user), array('OK'));
+        else
+            return new Result(Result::FAILURE_CREDENTIAL_INVALID, null, array());
+    }
+
+
+    /**
+     *
+     * @return Manager
+     */
+    public function getManager()
+    {
+
+        $this->manager = $this->getServiceLocator()->get('manager');
+       /* if (null === $this->manager) {
+            if ($this->manager instanceof \Doctrine\ORM\EntityManager) {
+                $this->manager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+
+            } else if ($this->manager instanceof \Doctrine\ODM\MongoDB\DocumentManager) {
+                $this->manager = $this->getServiceLocator()->get('Doctrine\ODM\MongoDB\DocumentManager');
+
+            }
+        }*/
+        return $this->manager;
+    }
+
+}

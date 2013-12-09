@@ -1,0 +1,50 @@
+<?php
+
+namespace DTUXBase\View\Helper;
+use Zend\View\Helper\AbstractHelper,
+    Zend\Authentication\AuthenticationService,
+    Zend\Authentication\Storage\Session as SessionStorage;
+
+/**
+ * Classe que enviar a entidade do usuário logado para view
+ * @category DTUXBase
+ * @package DTUXBase
+ * @subpackage View\Helper
+ * @author Diego Pereira Grassato <diego.grassato@gmail.com>
+ * @data 31/10/13 19:30
+ */
+class UserIdentity extends AbstractHelper {
+
+    /**
+     * @var \Zend\Authentication\AuthenticationService $authService Autenticador padrão
+     */
+    protected $authService;
+
+    /**
+     * @return AuthenticationService
+     */
+    public function getAuthService() {
+        return $this->authService;
+    }
+
+    /**
+     * @todo É invocado toda vez que ouver necessidade de se obter a entidade logada em uma view
+     * @param \Zend\Authentication\Storage\Session $namespace Retorna o objeto em sessão
+     * @return bool|mixed
+     */
+    public function __invoke($namespace = null) {
+        $sessionStorage = new SessionStorage($namespace);
+        $this->authService = new AuthenticationService;
+        $this->authService->setStorage($sessionStorage);
+
+        if ($this->getAuthService()->hasIdentity()) {
+            return $this->getAuthService()->getIdentity();
+        }
+        else
+            return false;
+
+
+    }
+
+}
+

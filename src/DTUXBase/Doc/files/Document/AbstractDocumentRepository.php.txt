@@ -1,0 +1,11 @@
+<?php
+namespace DTUXBase\Document;
+use Doctrine\ODM\MongoDB\DocumentRepository;
+
+/**
+ * Class AbstractDocumentRepository
+ * @package DTUXBase\Document
+ */
+class AbstractDocumentRepository extends DocumentRepository{
+
+} 

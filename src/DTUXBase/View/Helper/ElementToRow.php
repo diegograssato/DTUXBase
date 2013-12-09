@@ -1,0 +1,48 @@
+<?php
+namespace DTUXBase\View\Helper;
+use Zend\Form\View\Helper\AbstractHelper,
+    Zend\Form\Form,
+    Zend\Form\View\Helper,
+    Zend\Form\ElementInterface;
+
+/**
+ * Classe que insere valores dentro de tags relacionadas a tabelas
+ * @category DTUXBase
+ * @package DTUXBase
+ * @subpackage View\Helper
+ * @author Diego Pereira Grassato <diego.grassato@gmail.com>
+ * @data 31/10/13 19:40
+ */
+class ElementToRow extends AbstractHelper
+{
+    /*
+     * Returns an HTML table row using a form element
+     * <tr><td></td>
+     * @param string $elementName = name of the element to render
+     * @return string $html
+     */
+    public function render(ElementInterface $element)
+    {
+        $formLabel   = new Helper\FormLabel();
+        $formElement = new Helper\FormElement();
+        $formErrors  = new Helper\FormElementErrors();
+        $view      = $this->getView();
+        $formElement->setView($view);
+        $formErrors->setView($view);
+
+        $html = "
+        <div class='control-group'>
+        ".$formLabel($element)."
+        <div class='controls'>
+        ".$formElement($element)."
+        <span class='error-block label label-important'>".$formErrors($element)."</span>
+        </div>
+      </div>";
+
+        return $html;
+    }
+    public function __invoke(ElementInterface $element)
+    {
+        return $this->render($element);
+    }
+} 
