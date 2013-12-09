@@ -10,34 +10,19 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
  */
 abstract class AbstractDocument
 {
-    /**
-     * @ODM\Id
-     * @ODM\Index
-     */
+    /** @ODM\Id @ODM\Index */
     protected $id;
 
-    /**
-     * @ODM\Increment
-     * @ODM\Index
-     */
+    /** @ODM\Increment */
     protected $changes = 0;
 
-    /**
-     * @ODM\String
-     * @ODM\Index(unique=true)
-    */
+    /** @ODM\String @ODM\UniqueIndex(order="asc") */
     protected $nome;
 
-    /**
-     * @ODM\Date
-     * @ODM\Index
-     */
+    /** @ODM\Date */
     protected $createdAt;
 
-    /**
-     * @ODM\Date
-     * @ODM\Index
-     */
+    /** @ODM\Date  */
     protected $updatedAt;
 
 
