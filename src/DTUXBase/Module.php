@@ -1,6 +1,8 @@
 <?php
 namespace DTUXBase;
 
+use DoctrineModule\Persistence\ObjectManagerAwareInterface;
+
 class Module
 {
 
@@ -15,11 +17,26 @@ class Module
         );
     }
 
+    public function getFormElementConfig()
+    {
+        return array(
+            'initializers' => array(
+                'ObjectManagerInitializer' => function ($element, $formElements) {
+                        if ($element instanceof ObjectManagerAwareInterface) {
+                            $services = $formElements->getServiceLocator();
+                            $entityManager = $services->get('manager');
+                            $element->setObjectManager($entityManager);
+                        }
+                    },
+            ),
+        );
+    }
+
     public function getViewHelperConfig()
     {
         return array(
             'invokables' => array(
-                'UserIdentity' => new \DTUXBase\View\Helper\UserIdentity(),//Registra a entidade do usuário que está em sessao
+                'UserIdentity' => new \DTUXBase\View\Helper\UserIdentity(), //Registra a entidade do usuário que está em sessao
                 'menuBar' => 'DTUXBase\View\Helper\MenuBar',
                 'elementToRow' => 'DTUXBase\View\Helper\ElementToRow',
                 'firewall' => 'DTUXBase\View\Helper\FirewallLink'
@@ -40,14 +57,14 @@ class Module
                         return $helper;
                     },
  */
-                'flashMessage' => function($serviceManager) {
+                'flashMessage' => function ($serviceManager) {
                         $flashmessenger = $serviceManager->getServiceLocator()->get('ControllerPluginManager')->get('flashmessenger');
                         $message = new \DTUXBase\View\Helper\FlashMessages();
-                        $message->setFlashMessenger( $flashmessenger );
+                        $message->setFlashMessenger($flashmessenger);
 
-                        return $message ;
+                        return $message;
                     },
-                'absoluteUrl' => function($sm) {
+                'absoluteUrl' => function ($sm) {
                         $locator = $sm->getServiceLocator();
                         return new \DTUXBase\View\Helper\AbsoluteUrl($locator->get('Request'));
                     },

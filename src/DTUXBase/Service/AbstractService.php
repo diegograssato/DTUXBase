@@ -64,15 +64,6 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
     {
 
         $this->manager = $this->getServiceLocator()->get('manager');
-        /*if (null === $this->manager) {
-            if ($this->manager instanceof \Doctrine\ORM\EntityManager) {
-                $this->manager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-
-            } else if ($this->manager instanceof \Doctrine\ODM\MongoDB\DocumentManager) {
-                $this->manager = $this->getServiceLocator()->get('Doctrine\ODM\MongoDB\DocumentManager');
-
-            }
-        }*/
         return $this->manager;
     }
 

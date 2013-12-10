@@ -8,7 +8,7 @@ use Zend\Stdlib\Hydrator;
 use DTUXBase\Logger\Logger as Logger;
 
 /**
- * Classe de controle abastrata
+ * Classe de controle abstrata
  * @category DTUXBase
  * @package DTUXBase
  * @subpackage Controller
@@ -70,10 +70,12 @@ abstract class AbstractController extends AbstractActionController
      */
     public function cadastroAction()
     {
+        //$form = $this->serviceLocator->get('FormElementManager')->get($this->form);
+        $serviceForm = $this->getServiceLocator()->get('FormElementManager');
         if(is_string($this->form))
-            $form = new $this->form;
+            $form = $serviceForm->get($this->form);
         else
-            $form = new $this->form();
+            $form = $serviceForm->get($this->form);
 
         $request = $this->getRequest();
         $id = $this->params()->fromRoute('id', 0);
