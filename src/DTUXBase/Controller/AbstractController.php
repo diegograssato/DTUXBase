@@ -3,8 +3,10 @@ namespace DTUXBase\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController,
     Zend\View\Model\ViewModel,
-    Zend\View\Model\JsonModel;
-use Zend\Stdlib\Hydrator;
+    Zend\View\Model\JsonModel,
+    Zend\Stdlib\Hydrator,
+    Zend\Authentication\AuthenticationService,
+    Zend\Authentication\Storage\Session as SessionStorage;
 use DTUXBase\Logger\Logger as Logger;
 
 /**
@@ -61,7 +63,6 @@ abstract class AbstractController extends AbstractActionController
             return new ViewModel(array('data' => $paginator, 'page' => $page, 'busca' => $busca));
         }
 
-
     }
 
     /**
@@ -85,7 +86,11 @@ abstract class AbstractController extends AbstractActionController
 
 
         if ($id) {
-            $entity = $service->findOneEntity($id);
+
+            if (!is_object($entity = $service->findOneEntity($id))) {
+                $this->flashMessenger()->setNamespace('danger')->addMessage('Entidade nao encontrada!');
+                return $this->redirect()->toRoute($this->route, array('controller' => $this->controller));
+            }
             $array = $entity->toArray();
            // print_r($array);
             $form->setData($array);
@@ -143,8 +148,14 @@ abstract class AbstractController extends AbstractActionController
     public function viewAction()
     {
         $id = $this->params()->fromRoute('id', 0);
+
         $service = $this->getServiceLocator()->get($this->service);
-        $entity = $service->findOneEntity($id);
+
+        if (!is_object($entity = $service->findOneEntity($id))) {
+            $this->flashMessenger()->setNamespace('danger')->addMessage('Entidade nao encontrada!');
+            return $this->redirect()->toRoute($this->route, array('controller' => $this->controller));
+        }
+
         return new ViewModel(array('entity' => $entity));
     }
 
@@ -260,4 +271,48 @@ abstract class AbstractController extends AbstractActionController
         $response->setContent(1);
         return $response;
     }
+
+    /**
+     * Get a user from the Security Context
+     *
+     * @return mixed
+     *
+     * @throws \LogicException If SecurityBundle is not available
+     *
+     * @see Symfony\Component\Security\Core\Authentication\Token\TokenInterface::getUser()
+     */
+    public function getUser()
+    {
+        $sessionStorage = new SessionStorage("DTuX");
+        $this->authService = new AuthenticationService;
+        $this->authService->setStorage($sessionStorage);
+
+        if ($this->getAuthService()->hasIdentity()) {
+            $id = $this->getAuthService()->getIdentity()->getId();
+            if (null === $id) {
+                return null;
+            }
+            $service = $this->getServiceLocator()->get($this->service);
+
+            if (!is_object($entity = $service->findOneEntity($id))) {
+                $this->flashMessenger()->setNamespace('danger')->addMessage('Entidade nao encontrada!');
+                return $this->redirect()->toRoute($this->route, array('controller' => $this->controller));
+            }
+            return $entity;
+        }
+        else
+            return null;
+    }
+    /**
+     * @var \Zend\Authentication\AuthenticationService $authService Autenticador padrão
+     */
+    protected $authService;
+
+    /**
+     * @return AuthenticationService
+     */
+    public function getAuthService() {
+        return $this->authService;
+    }
+
 }

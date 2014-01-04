@@ -3,6 +3,7 @@
 .buildpath
 .DS_Store
 .idea
+.idea/
 .project
 .settings
 composer.lock
