@@ -10,7 +10,7 @@ use Zend\View\Helper\AbstractHelper,
  * @category DTUXBase
  * @package DTUXBase
  * @subpackage View\Helper
- * @author Diego Pereira Grassato <diego.grassato@gmail.com>
+ * @author Diego Pereira Grassato <diego    .grassato@gmail.com>
  * @data 31/10/13 19:30
  */
 class UserIdentity extends AbstractHelper {
@@ -33,10 +33,7 @@ class UserIdentity extends AbstractHelper {
      * @return bool|mixed
      */
     public function __invoke($namespace = null) {
-        $sessionStorage = new SessionStorage($namespace);
         $this->authService = new AuthenticationService;
-        $this->authService->setStorage($sessionStorage);
-
         if ($this->getAuthService()->hasIdentity()) {
             return $this->getAuthService()->getIdentity();
         }

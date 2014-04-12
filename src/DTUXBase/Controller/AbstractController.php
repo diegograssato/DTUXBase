@@ -85,8 +85,7 @@ abstract class AbstractController extends AbstractActionController
 
 
 
-        if ($id) {
-
+        if (null != $id) {
             if (!is_object($entity = $service->findOneEntity($id))) {
                 $this->flashMessenger()->setNamespace('danger')->addMessage('Entidade nao encontrada!');
                 return $this->redirect()->toRoute($this->route, array('controller' => $this->controller));
@@ -273,37 +272,6 @@ abstract class AbstractController extends AbstractActionController
     }
 
     /**
-     * Get a user from the Security Context
-     *
-     * @return mixed
-     *
-     * @throws \LogicException If SecurityBundle is not available
-     *
-     * @see Symfony\Component\Security\Core\Authentication\Token\TokenInterface::getUser()
-     */
-    public function getUser()
-    {
-        $sessionStorage = new SessionStorage("DTuX");
-        $this->authService = new AuthenticationService;
-        $this->authService->setStorage($sessionStorage);
-
-        if ($this->getAuthService()->hasIdentity()) {
-            $id = $this->getAuthService()->getIdentity()->getId();
-            if (null === $id) {
-                return null;
-            }
-            $service = $this->getServiceLocator()->get($this->service);
-
-            if (!is_object($entity = $service->findOneEntity($id))) {
-                $this->flashMessenger()->setNamespace('danger')->addMessage('Entidade nao encontrada!');
-                return $this->redirect()->toRoute($this->route, array('controller' => $this->controller));
-            }
-            return $entity;
-        }
-        else
-            return null;
-    }
-    /**
      * @var \Zend\Authentication\AuthenticationService $authService Autenticador padrão
      */
     protected $authService;
@@ -314,5 +282,26 @@ abstract class AbstractController extends AbstractActionController
     public function getAuthService() {
         return $this->authService;
     }
+
+    /**
+     * @todo É invocado toda vez que ouver necessidade de se obter a entidade logada em uma view
+     * @param \Zend\Authentication\Storage\Session $namespace Retorna o objeto em sessão
+     * @return bool|mixed
+     */
+    public function getUser($full = false) {
+        $sessionStorage = new SessionStorage('DTuX');
+        $this->authService = new AuthenticationService;
+        $this->authService->setStorage($sessionStorage);
+
+        if ($this->getAuthService()->hasIdentity()) {
+            $entity = $this->getAuthService()->getIdentity() ["credenciais"];
+            if($full == true)
+                 $entity = $this->getAuthService()->getIdentity();
+            return $entity;
+        }
+        else
+            return false;
+    }
+
 
 }

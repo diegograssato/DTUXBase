@@ -23,6 +23,7 @@ class Module
             'initializers' => array(
                 'ObjectManagerInitializer' => function ($element, $formElements) {
                         if ($element instanceof ObjectManagerAwareInterface) {
+                            // var_dump(get_class($element));
                             $services = $formElements->getServiceLocator();
                             $entityManager = $services->get('manager');
                             $element->setObjectManager($entityManager);

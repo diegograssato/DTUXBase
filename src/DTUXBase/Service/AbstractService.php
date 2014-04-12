@@ -33,6 +33,10 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
      */
     protected $sessionName;
 
+    public function __construct($entity)
+    {
+        $this->entity = $entity;
+    }
     /**
      * Insere registro no banco e altera
      * @todo InsertOrUpdate insere e atualiza um registro no banco ele identifica atravéz do array de dados e se tiver um ID ele atualiza caso contrario insere
@@ -50,6 +54,7 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
             (new Hydrator\ClassMethods())->hydrate($data, $entity);
 
         }
+
         $this->getManager()->persist($entity);
         $this->getManager()->flush();
         return $entity;
@@ -75,15 +80,7 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
      */
     public function insert(array $data)
     {
-        if (!is_array($data)) {
-            throw new \InvalidArgumentException('É necessário passar um array de dados para completar esta operação');
-        }
-
-        $entity = new $this->entity($data);
-
-        $this->getManager()->persist($entity);
-        $this->getManager()->flush();
-        return $entity;
+        return self::save($data);
     }
 
     /**
@@ -97,7 +94,7 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
         if (is_null($entity)) {
             throw new \InvalidArgumentException('É necessário passar um array de dados para completar esta operação');
         }
-
+        echo get_class($entity);
         $this->getManager()->persist($entity);
         $this->getManager()->flush();
         return $entity;
@@ -273,7 +270,7 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
      * Realiza busca pelo ID e retorna um entidade utilizada para o Edit
      * @todo Ele faz a busca através da Entidade current caso for passado outro ele sobrescreve o padrão
      * @param $id ID do item a ser consultado
-     * @param $newEntity Um entidade diferente do controller em questão
+     * @param $newEntity Uma entidade diferente do controller em questão
      * @return $entity Retorna a endidade do ID requisitado
      */
     public function findOneEntity($id, $newEntity = null)

@@ -1,14 +1,26 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: diego
- * Date: 04/01/14
- * Time: 00:42
- */
-
 namespace DTUXBase\Document\Interfaces;
 
 
-class UserInterface {
+interface UserInterface {
 
+    public function setChanges($changes);
+
+    public function getChanges();
+
+    public function setCreatedAt($createdAt);
+
+    public function getCreatedAt();
+
+    public function setId($id);
+
+    public function getId();
+
+    public function setNome($nome);
+
+    public function getNome();
+
+    public function setUpdatedAt($updatedAt);
+
+    public function getUpdatedAt();
 } 

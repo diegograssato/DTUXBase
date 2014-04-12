@@ -1,31 +1,43 @@
 <?php
 namespace DTUXBase\Document;
 
-use Zend\Stdlib\Hydrator;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Zend\Stdlib\Hydrator;
 
 /**
  * @ODM\MappedSuperclass
- * @HasLifecycleCallbacks
+ * @ODM\HasLifecycleCallbacks
  */
 abstract class AbstractDocument
 {
-    /** @ODM\Id @ODM\Index */
+    /**
+     * @ODM\Id
+     * @ODM\Index
+     */
     protected $id;
 
-    /** @ODM\Increment */
+    /**
+     * @ODM\Increment
+     */
     protected $changes = 0;
 
-    /** @ODM\String @ODM\UniqueIndex(order="asc") */
+    /**
+     * @ODM\Field(type="string")
+     * @ODM\UniqueIndex(order="asc")
+     */
     protected $nome;
 
-    /** @ODM\Date */
+    /** @ODM\Field(type="date") */
     protected $createdAt;
 
-    /** @ODM\Date  */
+    /** @ODM\Field(type="date") */
     protected $updatedAt;
 
-
+    /** @ODM\PrePersist */
+    public function doOtherStuffOnPrePersist()
+    {
+        echo "<pre>Pre Persist</pre>";
+    }
     /**
      * @ODM\PreUpdate
      */
@@ -38,7 +50,7 @@ abstract class AbstractDocument
     /**
      * @ODM\PreFlush
      */
-    public function preFlusht()
+    public function preFlush()
     {
         ($this->createdAt)? null :$this->createdAt = new \MongoDate();
         $this->updatedAt = new \MongoDate();
@@ -91,6 +103,20 @@ abstract class AbstractDocument
         if ($debug)
             $json = \Zend\Json\Json::prettyPrint($json, array("indent" => " # "));
         return $json;
+    }
+
+    public function toSerializado()
+    {
+        $serializer =  \Zend\Serializer\Serializer::factory('phpserialize');
+        $objSerializado =  $serializer->serialize($this);
+        return $objSerializado;
+    }
+
+    public function toDeserializado($debug = true)
+    {
+        $serializer =  \Zend\Serializer\Serializer::factory('phpserialize');
+        $objSerializado =  $serializer->unserialize(self::toSerializado());
+        return $objSerializado;
     }
 
     /************************************************************************************************

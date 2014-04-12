@@ -3,7 +3,7 @@
 .buildpath
 .DS_Store
 .idea
-.idea/
+.idea/*
 .idea/workspace.xml
 .project
 .settings

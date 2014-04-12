@@ -9,7 +9,7 @@
 namespace DTUXBase\Document\Interfaces;
 
 
-interface AdvancedUserInterface {
+interface AdvancedUserInterface extends UserInterface{
 
     /**
      * Verifica se a conta do usuário expirou.
