@@ -18,7 +18,7 @@ abstract class AbstractDocument
     /**
      * @ODM\Increment
      */
-    protected $changes = 0;
+    protected $alteracoes = 0;
 
     /**
      * @ODM\Field(type="string")
@@ -40,7 +40,7 @@ abstract class AbstractDocument
      */
     public function preUpdate()
     {
-        $this->changes++;
+        $this->alteracoes++;
         $this->atualizadoEm = new \MongoDate();
     }
 
@@ -50,7 +50,7 @@ abstract class AbstractDocument
     public function preFlush()
     {
         ($this->criadoEm)? null :$this->criadoEm = new \MongoDate();
-        $this->criadoEm = new \MongoDate();
+        $this->atualizadoEm = new \MongoDate();
     }
 
 
@@ -286,4 +286,5 @@ abstract class AbstractDocument
 
         return $this;
     }
+
 }
