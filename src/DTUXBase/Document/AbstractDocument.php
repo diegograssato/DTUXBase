@@ -2,7 +2,6 @@
 namespace DTUXBase\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-use Zend\Stdlib\Hydrator;
 
 /**
  * @ODM\MappedSuperclass
@@ -28,23 +27,18 @@ abstract class AbstractDocument
     protected $nome;
 
     /** @ODM\Field(type="date") */
-    protected $createdAt;
+    protected $criado_em;
 
     /** @ODM\Field(type="date") */
-    protected $updatedAt;
+    protected $atualizado_em;
 
-    /** @ODM\PrePersist */
-    public function doOtherStuffOnPrePersist()
-    {
-        echo "<pre>Pre Persist</pre>";
-    }
     /**
      * @ODM\PreUpdate
      */
     public function preUpdate()
     {
         $this->changes++;
-        $this->updatedAt = new \MongoDate();
+        $this->atualizado_em = new \MongoDate();
     }
 
     /**
@@ -52,8 +46,8 @@ abstract class AbstractDocument
      */
     public function preFlush()
     {
-        ($this->createdAt)? null :$this->createdAt = new \MongoDate();
-        $this->updatedAt = new \MongoDate();
+        ($this->atualizado_em)? null :$this->atualizado_em = new \MongoDate();
+        $this->atualizado_em = new \MongoDate();
     }
 
 
@@ -168,31 +162,10 @@ abstract class AbstractDocument
         return $this->changes;
     }
 
-    /**
-     * @param mixed $createdAt
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-    }
 
     /**
-     * @return mixed
-     */
-    public function getCreatedAt()
-    {
-       return $this->createdAt;
-    }
-
-    /**
-     * @param mixed $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
+     * Gets the value of id.
+     *
      * @return mixed
      */
     public function getId()
@@ -201,14 +174,22 @@ abstract class AbstractDocument
     }
 
     /**
-     * @param mixed $nome
+     * Sets the value of id.
+     *
+     * @param mixed $id the id
+     *
+     * @return self
      */
-    public function setNome($nome)
+    public function setId($id)
     {
-        $this->nome = $nome;
+        $this->id = $id;
+
+        return $this;
     }
 
     /**
+     * Gets the value of nome.
+     *
      * @return mixed
      */
     public function getNome()
@@ -217,20 +198,64 @@ abstract class AbstractDocument
     }
 
     /**
-     * @param mixed $updatedAt
+     * Sets the value of nome.
+     *
+     * @param mixed $nome the nome
+     *
+     * @return self
      */
-    public function setUpdatedAt($updatedAt)
+    public function setNome($nome)
     {
-        $this->updatedAt = $updatedAt;
+        $this->nome = $nome;
+
+        return $this;
     }
 
     /**
-     * @param string $format
+     * Gets the value of criado_em.
+     *
      * @return mixed
      */
-    public function getUpdatedAt()
+    public function getCriado_em()
     {
-       return $this->updatedAt;
+        return $this->criado_em;
     }
 
+    /**
+     * Sets the value of criado_em.
+     *
+     * @param mixed $criado_em the criado_em
+     *
+     * @return self
+     */
+    public function setCriado_em($criado_em)
+    {
+        $this->criado_em = $criado_em;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of atualizado_em.
+     *
+     * @return mixed
+     */
+    public function getAtualizado_em()
+    {
+        return $this->atualizado_em;
+    }
+
+    /**
+     * Sets the value of atualizado_em.
+     *
+     * @param mixed $atualizado_em the atualizado_em
+     *
+     * @return self
+     */
+    public function setAtualizado_em($atualizado_em)
+    {
+        $this->atualizado_em = $atualizado_em;
+
+        return $this;
+    }
 }
