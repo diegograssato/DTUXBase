@@ -26,11 +26,14 @@ abstract class AbstractDocument
      */
     protected $nome;
 
-    /** @ODM\Field(type="date") */
-    protected $criado_em;
+    /** @ODM\Field(type="boolean") */
+    private $ativo = true;
 
     /** @ODM\Field(type="date") */
-    protected $atualizado_em;
+    protected $criadoEm;
+
+    /** @ODM\Field(type="date") */
+    protected $atualizadoEm;
 
     /**
      * @ODM\PreUpdate
@@ -38,7 +41,7 @@ abstract class AbstractDocument
     public function preUpdate()
     {
         $this->changes++;
-        $this->atualizado_em = new \MongoDate();
+        $this->atualizadoEm = new \MongoDate();
     }
 
     /**
@@ -46,8 +49,8 @@ abstract class AbstractDocument
      */
     public function preFlush()
     {
-        ($this->atualizado_em)? null :$this->atualizado_em = new \MongoDate();
-        $this->atualizado_em = new \MongoDate();
+        ($this->criadoEm)? null :$this->criadoEm = new \MongoDate();
+        $this->criadoEm = new \MongoDate();
     }
 
 
@@ -212,49 +215,74 @@ abstract class AbstractDocument
     }
 
     /**
-     * Gets the value of criado_em.
+     * Gets the value of criadoEm.
      *
      * @return mixed
      */
-    public function getCriado_em()
+    public function getCriadoEm()
     {
-        return $this->criado_em;
+        return $this->criadoEm;
     }
 
     /**
-     * Sets the value of criado_em.
+     * Sets the value of criadoEm.
      *
-     * @param mixed $criado_em the criado_em
+     * @param mixed $criadoEm the criado em
      *
      * @return self
      */
-    public function setCriado_em($criado_em)
+    public function setCriadoEm($criadoEm)
     {
-        $this->criado_em = $criado_em;
+        $this->criadoEm = $criadoEm;
 
         return $this;
     }
 
     /**
-     * Gets the value of atualizado_em.
+     * Gets the value of atualizadoEm.
      *
      * @return mixed
      */
-    public function getAtualizado_em()
+    public function getAtualizadoEm()
     {
-        return $this->atualizado_em;
+        return $this->atualizadoEm;
     }
 
     /**
-     * Sets the value of atualizado_em.
+     * Sets the value of atualizadoEm.
      *
-     * @param mixed $atualizado_em the atualizado_em
+     * @param mixed $atualizadoEm the atualizado em
      *
      * @return self
      */
-    public function setAtualizado_em($atualizado_em)
+    public function setAtualizadoEm($atualizadoEm)
     {
-        $this->atualizado_em = $atualizado_em;
+        $this->atualizadoEm = $atualizadoEm;
+
+        return $this;
+    }
+
+
+    /**
+     * Gets the value of ativo.
+     *
+     * @return mixed
+     */
+    public function getAtivo()
+    {
+        return $this->ativo;
+    }
+
+    /**
+     * Sets the value of ativo.
+     *
+     * @param mixed $ativo the ativo
+     *
+     * @return self
+     */
+    public function setAtivo($ativo)
+    {
+        $this->ativo = $ativo;
 
         return $this;
     }
