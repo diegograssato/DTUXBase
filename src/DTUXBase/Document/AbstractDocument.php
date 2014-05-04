@@ -2,6 +2,7 @@
 namespace DTUXBase\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Zend\Stdlib\Hydrator;
 
 /**
  * @ODM\MappedSuperclass
@@ -94,7 +95,7 @@ abstract class AbstractDocument
      * ************************* Transforma Entidade em um JSon  ***********************************
      * **********************************************************************************************
      */
-    public function toJson($debug = true)
+    public function toJson($debug = false)
     {
         $json = \Zend\Json\Json::encode((new Hydrator\ClassMethods())->extract($this), true);
         if ($debug)
@@ -109,7 +110,7 @@ abstract class AbstractDocument
         return $objSerializado;
     }
 
-    public function toDeserializado($debug = true)
+    public function toDeserializado()
     {
         $serializer =  \Zend\Serializer\Serializer::factory('phpserialize');
         $objSerializado =  $serializer->unserialize(self::toSerializado());

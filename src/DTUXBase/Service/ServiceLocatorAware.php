@@ -40,7 +40,6 @@ class ServiceLocatorAware implements ServiceLocatorAwareInterface
      */
     public function getServiceLocator()
     {
-        //echo "<br>*************** Carregando service ***************<br>";
         return $this->sm;
     }
 

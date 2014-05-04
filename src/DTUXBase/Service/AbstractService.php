@@ -3,6 +3,8 @@ namespace DTUXBase\Service;
 
 use Zend\Stdlib\Hydrator,
     Zend\Paginator\Paginator,
+    Zend\EventManager\EventManagerAwareInterface,
+    Zend\EventManager\EventManagerInterface,
     Zend\Authentication\AuthenticationService,
     Zend\Authentication\Storage\Session as SessionStorage;
 
@@ -33,6 +35,11 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
      */
     protected $sessionName;
 
+       /**
+     * @var EventManagerInterface
+     */
+    protected $eventManager;
+
     public function __construct($entity)
     {
         $this->entity = $entity;
@@ -43,7 +50,7 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
      * @param array $data
      * @return mixed
      */
-    public function insertOrUpdate(array $data)
+    public function salvar(array $data)
     {
         if (!is_array($data)) {
             throw new \InvalidArgumentException('É necessário passar um array de dados para completar esta operação');
@@ -72,16 +79,7 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
         return $this->manager;
     }
 
-    /**
-     * Insere registro no banco
-     * @todo Insert insere um registro no banco
-     * @param array $data
-     * @return mixed
-     */
-    public function insert(array $data)
-    {
-        return self::save($data);
-    }
+
 
     /**
      * Insere registro no banco
@@ -89,7 +87,7 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
      * @param array $data
      * @return mixed
      */
-    public function save($entity)
+    public function inserir($entity)
     {
         if (is_null($entity)) {
             throw new \InvalidArgumentException('É necessário passar um array de dados para completar esta operação');
@@ -100,28 +98,7 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
         return $entity;
     }
 
-    /**
-     * Atualiza um registro no banco e altera
-     * @todo Update atualiza um registro no banco ele identifica atravéz do array de dados e se tiver um ID ele atualiza
-     * @param array $data
-     * @return mixed
-     */
-    public function update(array $data)
-    {
-        if (!is_array($data)) {
-            throw new \InvalidArgumentException('É necessário passar um array de dados para completar esta operação');
-        }
-        if (!isset($data['id'])) {
-            throw new \InvalidArgumentException('É necessário ter um indentificador para completar esta operação');
-        }
 
-        $entity = $this->getManager()->getReference($this->entity, $data['id']);
-        (new Hydrator\ClassMethods())->hydrate($data, $entity);
-
-        $this->getManager()->persist($entity);
-        $this->getManager()->flush();
-        return $entity;
-    }
 
     /**
      * Remove um registro no banco
@@ -152,37 +129,10 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
      * @param string $totalPorPagina Total de itens por página
      * @return Paginator
      */
-    public function fetchPaginator($busca = NULL, $page = 1, $campoPrincipal = 'nome', $totalPorPagina = '5')
+    public function getDataPaginator($busca = NULL, $page = 1, $campoPrincipal = 'nome', $totalPorPagina = '5')
     {
 
-        if ($this->getManager() instanceof \Doctrine\ORM\EntityManager) {
-            //$busca = array('nome' => "DTuX", 'email' => 'dtux3@gmail.com');
-            $search = $this->getManager()->getRepository($this->entity)->createQueryBuilder('m');
-            if (is_array($busca)) {
-                foreach ($busca as $key => $value) {
-                    if ($key == $campoPrincipal) {
-                        $search->where("m." . $campoPrincipal . " LIKE :busca")
-                            ->setParameter('busca', '%' . $value . '%');
-                    } else {
-                        $search->where("m." . $key . " LIKE :busca")
-                            ->setParameter('busca', '%' . $value . '%');
-                    }
-                }
-            }
 
-            if (is_string($busca)) {
-                $search->where("m." . $campoPrincipal . " LIKE :busca")
-                    ->setParameter('busca', '%' . $busca . '%');
-
-            }
-
-            $search->getQuery()
-                ->getResult();
-
-            $ormPaginator = new ORMPaginator($search);
-            $adapter = new PaginatorAdapter($ormPaginator);
-
-        } else if ($this->getManager() instanceof \Doctrine\ODM\MongoDB\DocumentManager) {
             $search = $this->getManager()->getRepository($this->entity)->createQueryBuilder();
             if (is_array($busca)) {
                 foreach ($busca as $key => $value) {
@@ -197,10 +147,10 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
                 $search->field($campoPrincipal)->equals(new \MongoRegex('/.*' . $busca . '.*/i'));
             }
 
-            $fetch = $search->getQuery()
+           $fetch = $search->getQuery()
                 ->execute();
-            $adapter = new ODMPaginator($fetch);
-        }
+           $adapter = new ODMPaginator($fetch);
+
         $paginator = new Paginator($adapter, $fetchJoinCollection = true);
         $paginator->setCurrentPageNumber($page)
             ->setItemCountPerPage($totalPorPagina);
@@ -215,35 +165,10 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
      * @param string $campoPrincipal Determina um campo como o principal para a busca
      * @return Array
      */
-    public function fetchBase($busca = NULL, $campoPrincipal = 'nome')
+    public function filtroBusca($busca = NULL, $campoPrincipal = 'nome')
     {
         $fetch = null;
-        if ($this->getManager() instanceof \Doctrine\ORM\EntityManager) {
-            //$busca = array('nome' => "DTuX", 'email' => 'dtux3@gmail.com');
-            $search = $this->getManager()->getRepository($this->entity)->createQueryBuilder('m');
-            if (is_array($busca)) {
-                foreach ($busca as $key => $value) {
-                    if ($key == $campoPrincipal) {
-                        $search->where("m." . $campoPrincipal . " LIKE :busca")
-                            ->setParameter('busca', '%' . $value . '%');
-                    } else {
-                        $search->where("m." . $key . " LIKE :busca")
-                            ->setParameter('busca', '%' . $value . '%');
-                    }
-                }
-            }
 
-            if (is_string($busca)) {
-                $search->where("m." . $campoPrincipal . " LIKE :busca")
-                    ->setParameter('busca', '%' . $busca . '%');
-
-            }
-
-            $fetch = $search->getQuery()
-                ->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY);
-
-
-        } else if ($this->getManager() instanceof \Doctrine\ODM\MongoDB\DocumentManager) {
             $search = $this->getManager()->getRepository($this->entity)->createQueryBuilder();
             if (is_array($busca)) {
                 foreach ($busca as $key => $value) {
@@ -261,7 +186,7 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
             $fetch = $search->getQuery()
                 ->execute()->toArray();
 
-        }
+
 
         return $fetch;
     }
@@ -323,6 +248,31 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
     public function setSessionName($sessionName)
     {
         $this->sessionName = $sessionName;
+    }
+
+
+    /**
+     * @param  EventManagerInterface $eventManager
+     * @return void
+     */
+    public function setEventManager(EventManagerInterface $eventManager)
+    {
+        $eventManager->addIdentifiers(array(
+            get_called_class()
+        ));
+        $this->eventManager = $eventManager;
+    }
+
+    /**
+     * @return EventManagerInterface
+     */
+    public function getEventManager()
+    {
+        if (null === $this->eventManager) {
+            $this->setEventManager(new \Zend\EventManager\EventManager());
+        }
+
+        return $this->eventManager;
     }
 
 
