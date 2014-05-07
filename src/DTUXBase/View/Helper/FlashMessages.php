@@ -48,7 +48,9 @@ class FlashMessages extends AbstractHelper
 
             if ( !$messages  ) continue;
 
+
             $messageString .= "<div class='alert alert-dismissable alert-$ns' id='flashMessenger'>";
+            $messageString .= "<i class='fa fa-ban'></i>";
             $messageString .= "<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>";
             $messageString .= implode( '<br />', $messages );
             $messageString .= "<script>
