@@ -19,7 +19,7 @@ abstract class AbstractDocument
     /**
      * @ODM\Increment
      */
-    protected $alteracoes = 0;
+    public $alteracoes = 0;
 
     /**
      * @ODM\Field(type="string")

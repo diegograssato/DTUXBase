@@ -283,25 +283,7 @@ abstract class AbstractController extends AbstractActionController
         return $this->authService;
     }
 
-    /**
-     * @todo É invocado toda vez que ouver necessidade de se obter a entidade logada em uma view
-     * @param \Zend\Authentication\Storage\Session $namespace Retorna o objeto em sessão
-     * @return bool|mixed
-     */
-    public function getUser($full = false) {
-        $sessionStorage = new SessionStorage('DTuX');
-        $this->authService = new AuthenticationService;
-        $this->authService->setStorage($sessionStorage);
-
-        if ($this->getAuthService()->hasIdentity()) {
-            $entity = $this->getAuthService()->getIdentity() ["credenciais"];
-            if($full == true)
-                 $entity = $this->getAuthService()->getIdentity();
-            return $entity;
-        }
-        else
-            return false;
-    }
+    
 
 
 }
