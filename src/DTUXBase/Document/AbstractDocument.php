@@ -2,7 +2,6 @@
 namespace DTUXBase\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-use Zend\Stdlib\Hydrator;
 
 /**
  * @ODM\MappedSuperclass
@@ -19,7 +18,7 @@ abstract class AbstractDocument
     /**
      * @ODM\Increment
      */
-    public $alteracoes = 0;
+    protected $alteracoes = 0;
 
     /**
      * @ODM\Field(type="string")
@@ -28,7 +27,7 @@ abstract class AbstractDocument
     protected $nome;
 
     /** @ODM\Field(type="boolean") */
-    private $ativo = true;
+    protected $ativo = true;
 
     /** @ODM\Field(type="date") */
     protected $criadoEm;
@@ -288,4 +287,28 @@ abstract class AbstractDocument
         return $this;
     }
 
+
+    /**
+     * Gets the value of alteracoes.
+     *
+     * @return mixed
+     */
+    public function getAlteracoes()
+    {
+        return $this->alteracoes;
+    }
+
+    /**
+     * Sets the value of alteracoes.
+     *
+     * @param mixed $alteracoes the alteracoes
+     *
+     * @return self
+     */
+    public function setAlteracoes($alteracoes)
+    {
+        $this->alteracoes = $alteracoes;
+
+        return $this;
+    }
 }
