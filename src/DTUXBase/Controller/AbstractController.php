@@ -7,7 +7,10 @@ use Zend\Mvc\Controller\AbstractActionController,
     Zend\Stdlib\Hydrator,
     Zend\Authentication\AuthenticationService,
     Zend\Authentication\Storage\Session as SessionStorage;
+
 use DTUXBase\Logger\Logger as Logger;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Form\Factory;
 
 /**
  * Classe de controle abstrata
@@ -65,11 +68,20 @@ abstract class AbstractController extends AbstractActionController
 
     }
 
-    /**
+     /**
      * Classe simples para construção única de new e edit em uma única função
      * @return \Zend\Http\Response|ViewModel
      */
     public function cadastroAction()
+    {
+
+    }
+
+    /**
+     * Classe simples para construção única de new e edit em uma única função
+     * @return \Zend\Http\Response|ViewModel
+     */
+    public function cadastroxAction()
     {
         //$form = $this->serviceLocator->get('FormElementManager')->get($this->form);
         $serviceForm = $this->getServiceLocator()->get('FormElementManager');
@@ -115,30 +127,7 @@ abstract class AbstractController extends AbstractActionController
         return new ViewModel(array('form' => $form));
     }
 
-    /**
-     * Classe responsável por cadastrar registros
-     * @return \Zend\Http\Response|ViewModel
-     */
-    public function newAction()
-    {
-        if(is_string($this->form))
-            $form = new $this->form;
-        else
-            $form = new $this->form();
-        $request = $this->getRequest();
 
-        if ($request->isPost()) {
-            $form->setData($request->getPost());
-            if ($form->isValid()) {
-                $service = $this->getServiceLocator()->get($this->service);
-                $service->insert($request->getPost()->toArray());
-
-                return $this->redirect()->toRoute($this->route, array('controller' => $this->controller));
-            }
-        }
-
-        return new ViewModel(array('form' => $form));
-    }
 
     /**
      * Classe responsável por visualizar informações completas quando desejado
@@ -203,6 +192,7 @@ abstract class AbstractController extends AbstractActionController
      */
     public function deleteAction()
     {
+
          $response = null ;
          $request = $this->getRequest();
 

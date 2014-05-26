@@ -2,7 +2,7 @@
 namespace DTUXBase\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-
+use Zend\Form\Annotation as Form;
 /**
  * @ODM\MappedSuperclass
  * @ODM\HasLifecycleCallbacks
@@ -12,27 +12,36 @@ abstract class AbstractDocument
     /**
      * @ODM\Id
      * @ODM\Index
+     * @Form\Exclude()
      */
     protected $id;
 
     /**
      * @ODM\Increment
+     * @Form\Exclude()
      */
     protected $alteracoes = 0;
 
     /**
      * @ODM\Field(type="string")
      * @ODM\UniqueIndex(order="asc")
+     * @Form\Exclude()
      */
     protected $nome;
 
-    /** @ODM\Field(type="boolean") */
+    /** @ODM\Field(type="boolean")
+     * @Form\Exclude()
+     */
     protected $ativo = true;
 
-    /** @ODM\Field(type="date") */
+    /** @ODM\Field(type="date") 
+     * @Form\Exclude()
+    */
     protected $criadoEm;
 
-    /** @ODM\Field(type="date") */
+    /** @ODM\Field(type="date") 
+     * @Form\Exclude()
+    */
     protected $atualizadoEm;
 
     /**
