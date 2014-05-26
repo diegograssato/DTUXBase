@@ -203,13 +203,30 @@ abstract class AbstractController extends AbstractActionController
      */
     public function deleteAction()
     {
-        $service = $this->getServiceLocator()->get($this->service);
-        if ($service->delete($this->params()->fromRoute('id', 0))){
-            $this->flashMessenger()->setNamespace('success')->addMessage('Registro removido com sucesso!');
-        }else{
-            $this->flashMessenger()->setNamespace('info')->addMessage('Falha ao remover resgistro!');
-        }
-        return $this->redirect()->toRoute($this->route,array('controller'=>$this->controller));
+         $response = null ;
+         $request = $this->getRequest();
+
+         $id = $this->params()->fromRoute('id', 0);
+         if ( "DELETE" == $request->getMethod() && ("undefined" != $id) ){
+
+                 // Faz a deleção
+                $response['code'] = 200;
+                $response['id'] = $id;
+                $service = $this->getServiceLocator()->get($this->service);
+                $service->delete($id);
+
+         }else{
+                $response['code'] = 400;
+                if(null == $id){
+                    $response['id'] = $id;
+                    $response['mensage'] = "O ID não pode ser nulo";
+                }
+                $response['id'] = $id;
+                $response['mensage'] = "Função só aceita DELETE";
+
+
+         }
+         return new JsonModel($response );
     }
 
     /**
@@ -271,19 +288,7 @@ abstract class AbstractController extends AbstractActionController
         return $response;
     }
 
-    /**
-     * @var \Zend\Authentication\AuthenticationService $authService Autenticador padrão
-     */
-    protected $authService;
 
-    /**
-     * @return AuthenticationService
-     */
-    public function getAuthService() {
-        return $this->authService;
-    }
-
-    
 
 
 }
