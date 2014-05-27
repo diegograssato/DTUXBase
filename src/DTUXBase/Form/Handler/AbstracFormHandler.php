@@ -11,15 +11,14 @@ use Zend\Form\FormInterface;
 class AbstracFormHandler
 {
 
-
-    /**
-     * @var Entidade responsavel pela manipulacao
+     /**
+     * @var \DTUXBase\Service\AbstractService
      */
-    protected $entity;
+    protected $serviceLocator;
 
-    public function __construct()
+    public function __construct($serviceLocator)
     {
-
+        $this->serviceLocator = $serviceLocator;
     }
     /**
      * Manipula o formulário de cadastro de resgate.
@@ -27,11 +26,9 @@ class AbstracFormHandler
      * @param  FormInterface $form
      * @param  Request       $request
      *
-     * @throws \RuntimeException se ocorrer uma falha durante o processo de inserção na base do PontuacaoResgate.
-     *
      * @return false se o formulário ou o tipo da requisição é inválido. true se a operação deu certo.
      */
-    public function handle($form, $request, $service, $entity)
+    public function handle(FormInterface $form, Request $request)
     {
 
         try {
@@ -39,28 +36,44 @@ class AbstracFormHandler
             if (!$request->isPost())
                 return false;
 
-           
-            $form->setData($request->getPost());
 
-            //
-            var_dump($form->getMessages());
+            $form->setData($request->getPost());
             if (!$form->isValid())
                  return false;
-            
-           // $data = $request->getPost()->toArray();
-           $service->insertOrUpdate($form->getData());
-           print_r($form->getData());exit;
-           $hydrator = $form->getHydrator();
-           // $data = $form->getData(FormInterface::VALUES_AS_ARRAY);
-           // var_dump( $data);exit;
-            //$service->insertOrUpdate($data);
 
+
+            $this->getServiceLocator()->salvar( $form->getData() );
 
         } catch (\Exception $e) {
-            echo $e->getMessage(); exit;
             return false;
         }
 
         return true;
+    }
+
+
+
+    /**
+     * Gets the value of serviceLocator.
+     *
+     * @return \DTUXBase\Service\AbstractService
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
+
+    /**
+     * Sets the value of serviceLocator.
+     *
+     * @param \DTUXBase\Service\AbstractService $serviceLocator the service locator
+     *
+     * @return self
+     */
+    public function setServiceLocator(\DTUXBase\Service\AbstractService $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+
+        return $this;
     }
 }

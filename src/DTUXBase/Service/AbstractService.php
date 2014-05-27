@@ -52,6 +52,7 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
      */
     public function salvar(array $data)
     {
+
         if (!is_array($data)) {
             throw new \InvalidArgumentException('É necessário passar um array de dados para completar esta operação');
         }

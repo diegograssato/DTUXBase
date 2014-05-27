@@ -33,7 +33,7 @@ class Module
         );
     }
 
- 
+
     public function getViewHelperConfig()
     {
         return array(
@@ -45,20 +45,10 @@ class Module
 
             ),
             'factories' => array(
-                'Router' => function ($sm) {
+                    'Router' => function ($sm) {
                         return new \DTUXBase\View\Helper\Router($sm->getServiceLocator()->get('application')->getMvcEvent()->getRouteMatch()); // Registra a rota traçada para ser passado para view
                     },
 
-                /*
-                 * Implementar ACLs
-                 *
-
-                 'firewall' => function ($serviceManager) {
-                        $helper = \DTUXBase\View\Helper\FirewallLink();
-                        //$helper->setAclService($serviceManager>getServiceLocator()->get('ZfcAcl\Service\Acl'));
-                        return $helper;
-                    },
- */
                 'flashMessage' => function ($serviceManager) {
                         $flashmessenger = $serviceManager->getServiceLocator()->get('ControllerPluginManager')->get('flashmessenger');
                         $message = new \DTUXBase\View\Helper\FlashMessages();
