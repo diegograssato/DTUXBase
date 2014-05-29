@@ -59,16 +59,19 @@ class AbstracFormHandler
     }
 
 
-    public function transformer($data, $dataTransformer){
+    public function transformer($data, $dataTransformer)
+    {
+
         foreach ($dataTransformer as $field => $entity) {
 
                 $dataTransformer = $this->getServiceLocator()->getDataTransformer();
                 $dataTransformer->setEntity($entity);
-                $trans = $dataTransformer->filter($data[$field]);
+                $filtro = $dataTransformer->filter( $data[$field] );
 
-                $data['server'] = $trans;
+                $data[$field] = $filtro;
 
         }
+
         return $data;
     }
 

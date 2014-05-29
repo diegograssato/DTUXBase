@@ -3,25 +3,24 @@ namespace DTUXBase\Form\Filter;
 
 use Zend\Filter\FilterInterface;
 
-class DataTransformer extends \DTUXBase\Service\ServiceLocatorAware implements FilterInterface
+class DataTransformer implements FilterInterface
 {
 
     protected $manager;
     protected $entity;
 
-    public function __construct()
+    public function __construct($manager, string $entity = null)
     {
+        $this->manager = $manager;
+        $this->entity = $entity;
 
-        $manager = $this->getServiceLocator()->get('manager');
-        $this->setManager($manager);
     }
 
     public function filter($id)
     {
-
         $obj = null;
         if(! is_null( $id ) )
-            $obj = $this->getManager()->getReference($this->getEntity(), $id);
+            $obj = $this->getManager()->getReference($this->entity, $id);
 
         return $obj;
     }
