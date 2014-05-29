@@ -28,7 +28,7 @@ class AbstracFormHandler
      *
      * @return false se o formulário ou o tipo da requisição é inválido. true se a operação deu certo.
      */
-    public function handle(FormInterface $form, Request $request)
+    public function handle(FormInterface $form, Request $request, $dataTransformer )
     {
 
         try {
@@ -38,11 +38,18 @@ class AbstracFormHandler
 
 
             $form->setData($request->getPost());
-            if (!$form->isValid())
-                 return false;
 
+            if(! $form->setData( $request->getPost() ) )
+                return false;
 
-            $this->getServiceLocator()->salvar( $form->getData() );
+            if (! $form->isValid() )
+                return false;
+
+            $data = $form->getData();
+            if( null !== $dataTransformer)
+                $data = $this->transformer($data, $dataTransformer);
+
+            $this->getServiceLocator()->salvar( $data );
 
         } catch (\Exception $e) {
             return false;
@@ -52,6 +59,18 @@ class AbstracFormHandler
     }
 
 
+    public function transformer($data, $dataTransformer){
+        foreach ($dataTransformer as $field => $entity) {
+
+                $dataTransformer = $this->getServiceLocator()->getDataTransformer();
+                $dataTransformer->setEntity($entity);
+                $trans = $dataTransformer->filter($data[$field]);
+
+                $data['server'] = $trans;
+
+        }
+        return $data;
+    }
 
     /**
      * Gets the value of serviceLocator.

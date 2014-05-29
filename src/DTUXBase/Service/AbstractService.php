@@ -30,10 +30,17 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
      * @var \DTUXBase\Entity $entity Entidade current
      */
     protected $entity;
+
     /**
      * @var String $sessionName Armazena o nome de uma sessão
      */
     protected $sessionName;
+
+
+    /**
+     * @var String $transformer Usado para transformar um id em objeto
+     */
+    protected $transformer;
 
        /**
      * @var EventManagerInterface
@@ -56,6 +63,7 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
         if (!is_array($data)) {
             throw new \InvalidArgumentException('É necessário passar um array de dados para completar esta operação');
         }
+
         $entity = new $this->entity($data);
         if (isset($data['id']) && $data['id'] > 0) {
             $entity = $this->getManager()->getReference($this->entity, $data['id']);
@@ -78,6 +86,18 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
 
         $this->manager = $this->getServiceLocator()->get('manager');
         return $this->manager;
+    }
+
+    /**
+     * Obtem a conectividade com o banco de dados
+     * @todo Obtem a conectividade com o banco de dados
+     * @return \Zend\ServiceManager\ServiceLocatorInterface Manager
+     */
+    public function getDataTransformer()
+    {
+
+        $this->transformer = $this->getServiceLocator()->get('DataTransformer');
+        return $this->transformer;
     }
 
 
