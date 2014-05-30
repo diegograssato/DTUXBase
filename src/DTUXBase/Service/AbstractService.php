@@ -51,6 +51,7 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
     {
         $this->entity = $entity;
     }
+
     /**
      * Insere registro no banco e altera
      * @todo InsertOrUpdate insere e atualiza um registro no banco ele identifica atravéz do array de dados e se tiver um ID ele atualiza caso contrario insere
