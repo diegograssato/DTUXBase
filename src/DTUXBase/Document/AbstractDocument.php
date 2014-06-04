@@ -12,7 +12,7 @@ abstract class AbstractDocument
     /**
      * @ODM\Id
      * @ODM\Index
-     * @Form\Exclude()
+     * @Form\Attributes({"type":"hidden"})
      */
     protected $id;
 
@@ -22,24 +22,17 @@ abstract class AbstractDocument
      */
     protected $alteracoes = 0;
 
-    /**
-     * @ODM\Field(type="string")
-     * @ODM\UniqueIndex(order="asc")
-     * @Form\Exclude()
-     */
-    protected $nome;
-
     /** @ODM\Field(type="boolean")
      * @Form\Exclude()
      */
     protected $ativo = true;
 
-    /** @ODM\Field(type="date") 
+    /** @ODM\Field(type="date")
      * @Form\Exclude()
     */
     protected $criadoEm;
 
-    /** @ODM\Field(type="date") 
+    /** @ODM\Field(type="date")
      * @Form\Exclude()
     */
     protected $atualizadoEm;
@@ -96,7 +89,7 @@ abstract class AbstractDocument
      */
     public function toArray()
     {
-        return (new Hydrator\ClassMethods())->extract($this);
+        return (new \Zend\Stdlib\Hydrator\ClassMethods())->extract($this);
     }
 
     /************************************************************************************************
@@ -158,21 +151,6 @@ abstract class AbstractDocument
      * *********************************** Getters and Setters  *************************************
      * **********************************************************************************************
      */
-    /**
-     * @param mixed $changes
-     */
-    public function setChanges($changes)
-    {
-        $this->changes = $changes;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getChanges()
-    {
-        return $this->changes;
-    }
 
 
     /**
@@ -199,29 +177,6 @@ abstract class AbstractDocument
         return $this;
     }
 
-    /**
-     * Gets the value of nome.
-     *
-     * @return mixed
-     */
-    public function getNome()
-    {
-        return $this->nome;
-    }
-
-    /**
-     * Sets the value of nome.
-     *
-     * @param mixed $nome the nome
-     *
-     * @return self
-     */
-    public function setNome($nome)
-    {
-        $this->nome = $nome;
-
-        return $this;
-    }
 
     /**
      * Gets the value of criadoEm.

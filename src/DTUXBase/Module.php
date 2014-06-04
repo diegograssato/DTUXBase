@@ -2,8 +2,9 @@
 namespace DTUXBase;
 
 use DoctrineModule\Persistence\ObjectManagerAwareInterface;
+use Zend\ModuleManager\Feature\FormElementProviderInterface;
 
-class Module
+class Module implements FormElementProviderInterface
 {
 
     public function getAutoloaderConfig()

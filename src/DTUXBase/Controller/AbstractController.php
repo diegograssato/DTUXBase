@@ -38,9 +38,19 @@ abstract class AbstractController extends AbstractActionController
     protected $form;
 
     /**
+     * @var \Zend\Form\Form $form Formulário
+     */
+    protected $formHandler;
+
+    /**
      * @var $route Rota para redirecionamento default
      */
     protected $route;
+
+    /**
+     * @var $dataTransformer Campo e stringEntity que irao ser transformados
+     */
+    protected $dataTransformer = array();
 
     /**
      * @var \Zend\Mvc\Controller\AbstractActionController $controller Nome do controller
@@ -68,13 +78,93 @@ abstract class AbstractController extends AbstractActionController
 
     }
 
-     /**
+    /**
+     * Classe simples para construção única de new e edit em uma única função
+     * @return \Zend\Form\Form
+    */
+    public function createForm()
+    {
+
+
+        $service = $this->getServiceLocator()->get( $this->service );
+        $serviceForm = $this->getServiceLocator()->get( 'FormElementManager' );
+
+
+        $builder = new AnnotationBuilder( $serviceForm );
+
+        $entity = new $this->entity;
+
+        /** @var $form \Zend\Form\Form **/
+        $form = $builder->createForm( $this->entity );
+        $form->add(new \Zend\Form\Element\Csrf('security'));
+
+        foreach ($this->dataTransformer as $class => $stringEntity) {
+
+            $form->get( $class )->setOptions(
+                array(
+                    'object_manager' => $service->getManager(),
+                    'target_class' => $stringEntity
+                )
+            );
+        }
+
+        return $form;
+
+    }
+
+    /**
      * Classe simples para construção única de new e edit em uma única função
      * @return \Zend\Http\Response|ViewModel
-     */
+    */
     public function cadastroAction()
     {
 
+
+        $service = $this->getServiceLocator()->get( $this->service );
+        $formHandle = $this->getServiceLocator()->get( $this->formHandler );
+
+        $request = $this->getRequest();
+
+        $form = $this->createForm();
+
+        if ( 0 !== ( $id = $this->params()->fromRoute('id', 0) ) ) {
+
+
+
+            if (! is_object( $entity = $service->findOneEntity($id) ) ) {
+
+                $this->flashMessenger()->setNamespace('danger')->addMessage('Entidade nao encontrada!');
+
+                return $this->redirect()->toRoute( $this->route );
+            }
+
+            $array = $entity->toArray();
+
+            if( array_key_exists('ip_address',$array) )
+                $array['ipAddress'] = $array['ip_address'];
+
+            $form->setData($array);
+
+
+            if( array_key_exists('password',$array) )
+                unset($array['password']);
+        }
+
+
+
+        if( $request->isPost() ) {
+            if ( $formHandle->handle($form, $request, $this->dataTransformer)  ){
+                $this->flashMessenger()->setNamespace('success')->addMessage('Dados salvos com sucesso!');
+
+             return $this->redirect()->toRoute('dominio');
+            }
+        }
+
+
+        $viewModel = new ViewModel();
+        $viewModel->setVariable('form',$form);
+
+        return $viewModel;
     }
 
     /**

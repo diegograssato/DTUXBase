@@ -65,11 +65,13 @@ abstract class AbstractService extends \DTUXBase\Service\ServiceLocatorAware
             throw new \InvalidArgumentException('É necessário passar um array de dados para completar esta operação');
         }
 
-        $entity = new $this->entity($data);
+        $entity = null;
         if (isset($data['id']) && $data['id'] > 0) {
             $entity = $this->getManager()->getReference($this->entity, $data['id']);
             (new Hydrator\ClassMethods())->hydrate($data, $entity);
 
+        }else{
+            $entity = new $this->entity($data);
         }
 
         $this->getManager()->persist($entity);
