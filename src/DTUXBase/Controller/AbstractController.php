@@ -11,6 +11,7 @@ use Zend\Mvc\Controller\AbstractActionController,
 use DTUXBase\Logger\Logger as Logger;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Factory;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 
 /**
  * Classe de controle abstrata
@@ -127,6 +128,16 @@ abstract class AbstractController extends AbstractActionController
 
         $form = $this->createForm();
 
+        if( $request->isPost() ) {
+            if ( $formHandle->handle($form, $request, $this->dataTransformer)  ){
+                $this->flashMessenger()->setNamespace('success')->addMessage('Dados salvos com sucesso!');
+
+             return $this->redirect()->toRoute( $this->route );
+
+            }
+
+        }
+
         if ( 0 !== ( $id = $this->params()->fromRoute('id', 0) ) ) {
 
 
@@ -145,20 +156,10 @@ abstract class AbstractController extends AbstractActionController
 
             $form->setData($array);
 
-
             if( array_key_exists('password',$array) )
                 unset($array['password']);
         }
 
-
-
-        if( $request->isPost() ) {
-            if ( $formHandle->handle($form, $request, $this->dataTransformer)  ){
-                $this->flashMessenger()->setNamespace('success')->addMessage('Dados salvos com sucesso!');
-
-             return $this->redirect()->toRoute('dominio');
-            }
-        }
 
 
         $viewModel = new ViewModel();

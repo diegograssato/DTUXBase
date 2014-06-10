@@ -46,6 +46,7 @@ class AbstracFormHandler
                 return false;
 
             $data = $form->getData();
+
             if( null !== $dataTransformer)
                 $data = $this->transformer($data, $dataTransformer);
 
